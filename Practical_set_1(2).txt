@@ -1,0 +1,53 @@
+create table student
+(
+rollno int primary key,
+name varchar,
+class varchar,
+birthdate date
+);
+
+create table course
+(
+courseno int primary key,
+coursename varchar,
+max_marks int,
+pass_marks int
+);
+
+pragma foreign_keys=on;
+
+create table sc
+(
+rollno int references student(rollno),
+courseno int references course(courseno),
+marks int
+);
+
+insert into student 
+values(1,"Om","FY","1-jun-2003"),(2,"Sai","FY","22-apr-2003"),(3,"Ram","FY","12-nov-2003"),(4,"Jay","SY","5-jan-2002"),(5,"Raj","SY","14-feb-2002"),(6,"Shiv","SY","6-Mar-2002"),(7,"Nath","TY","17-Dec-2001"),(8,"Seeta","TY","15-aug-2002"),(9,"Raj","TY","27-dec-2001");
+insert into course values(101,"Maths",100,35),(102,"Database Management System",100,35),(201,"Computer Network",100,35),(202,"CPPM",100,35),(301,"Operating System",100,35),(302,"Porgrammer Skill",100,35),(303,"Practical",300,150);
+insert into sc values(1,101,60),(1,102,55);
+insert into sc values(2,101,90),(2,102,88);
+insert into sc values(3,101,40),(3,102,34);
+insert into sc values(4,201,72),(4,202,70);
+insert into sc values(5,201,55),(5,202,38);
+insert into sc values(6,201,88),(6,202,74);
+insert into sc values(7,301,41),(7,302,44);
+insert into sc values(8,301,65),(8,302,73);
+insert into sc values(9,301,50),(9,302,61);
+
+select student.rollno,name,class,birthdate,course.coursename from ((student inner join sc on student.rollno=sc.rollno)inner join course on sc.courseno=course.courseno) where coursename="Database Management System";
+
+select name from ((student inner join sc on student.rollno=sc.rollno) inner join course on sc.courseno=course.courseno) where course.coursename="Computer Network" and sc.marks>=(70*100)/100 and sc.marks>=35;
+
+select student.name,avg(sc.marks) as "Avg marks" from student inner join sc on student.rollno=sc.rollno group by student.name;
+
+select coursename from course where pass_marks>(select avg(max_marks)*30/100 from course);
+
+select coursename from course;
+
+select student.rollno,student.name,student.class,student.birthdate,max(sc.marks) as "max marks" from student inner join sc on student.rollno=sc.rollno where sc.courseno=201;
+
+select distinct student.name,student.class,course.coursename from ((student inner join sc on student.rollno=sc.rollno)inner join course on sc.courseno=course.courseno) where student.class="SY" group by student.name;
+
+select student.name,avg(sc.marks) as "Avg marks" from student inner join sc on student.rollno=sc.rollno group by student.name;
